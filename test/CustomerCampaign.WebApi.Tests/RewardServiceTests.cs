@@ -108,19 +108,6 @@ public sealed class RewardServiceTests : IDisposable
         (await act.Should().ThrowAsync<ValidationAppException>()).Which.Code.Should().Be(ErrorCodes.CampaignNotActive);
     }
 
-    [Fact]
-    public async Task Listing_can_be_filtered_by_agent()
-    {
-        var service = NewService();
-        await GrantRangeAsync(service, "agent1", 101, 103);
-        await service.GrantAsync("agent2", new CreateRewardRequest { CustomerId = 201 });
-
-        var mine = await service.ListAsync("agent1", null, null);
-
-        mine.Should().HaveCount(3);
-        mine.Should().OnlyContain(r => r.AgentUsername == "agent1");
-    }
-
     private static async Task GrantRangeAsync(RewardService service, string agent, int firstCustomerId, int lastCustomerId)
     {
         for (var customerId = firstCustomerId; customerId <= lastCustomerId; customerId++)

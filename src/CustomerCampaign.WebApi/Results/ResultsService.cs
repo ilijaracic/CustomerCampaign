@@ -12,7 +12,7 @@ public sealed class ResultsService
         _db = db;
     }
 
-    public async Task<IReadOnlyList<MergedResultResponse>> etMergedResultsAsync(
+    public async Task<IReadOnlyList<MergedResultResponse>> GetMergedResultsAsync(
         string? agentUsername, CancellationToken cancellationToken = default)
     {
         var rewards = await FilterByAgent(_db.RewardEntries.AsQueryable(), agentUsername)

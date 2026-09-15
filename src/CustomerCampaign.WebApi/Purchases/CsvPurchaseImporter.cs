@@ -32,7 +32,7 @@ public sealed class CsvPurchaseImporter
         var totalRows = 0;
         var imported = 0;
         var errors = new List<ImportRowError>();
-        var existingOrderReferences =  _db.PurchaseRecords.Select(p => p.OrderReference).ToHashSet();
+        var existingOrderReferences = _db.PurchaseRecords.Select(p => p.OrderReference).ToHashSet();
         var seenInThisFile = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         if (!await csv.ReadAsync() || !csv.ReadHeader())
