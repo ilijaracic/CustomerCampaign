@@ -8,6 +8,8 @@ using CustomerCampaign.WebApi.Rewards;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Http.Resilience;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +44,15 @@ builder.Services.AddHttpClient<ICustomerDirectory, SoapCustomerDirectory>((servi
 {
     var soapOptions = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<SoapOptions>>().Value;
     client.BaseAddress = new Uri(soapOptions.ServiceUrl);
+})
+.AddResilienceHandler("soap-retry", static resilienceBuilder =>
+{
+    resilienceBuilder.AddRetry(new HttpRetryStrategyOptions
+    {
+        BackoffType = DelayBackoffType.Exponential,
+        MaxRetryAttempts = 3,
+        UseJitter = true,
+    });
 });
 
 builder.Services
