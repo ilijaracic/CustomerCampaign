@@ -15,9 +15,10 @@ public sealed class ResultsService
     public async Task<IReadOnlyList<MergedResultResponse>> GetMergedResultsAsync(
         string? agentUsername, CancellationToken cancellationToken = default)
     {
-        var rewards = await FilterByAgent(_db.RewardEntries.AsQueryable(), agentUsername)
+        var rewards = (await FilterByAgent(_db.RewardEntries.AsQueryable(), agentUsername)
+                .ToListAsync(cancellationToken))
             .OrderByDescending(r => r.CreatedAtUtc)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         if (rewards.Count == 0)
         {
