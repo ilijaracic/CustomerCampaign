@@ -116,7 +116,9 @@ public sealed class RewardService
             query = query.Where(r => r.RewardDate <= to.Value);
         }
 
-        var entries = await query.OrderByDescending(r => r.CreatedAtUtc).ToListAsync(cancellationToken);
+        var entries = (await query.ToListAsync(cancellationToken))
+            .OrderByDescending(r => r.CreatedAtUtc)
+            .ToList();
         return entries.Select(ToResponse).ToList();
     }
 
